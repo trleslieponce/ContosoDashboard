@@ -1,50 +1,36 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Contoso Dashboard Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Component-First Architecture
+Every feature starts as a reusable Razor component. Components must be self-contained, independently testable, and documented. Components have a single responsibility, clear public parameters, and no orphaned files. Organize components in Pages/ and Shared/ with folders by feature domain.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. API-First Design
+Define clear contracts for backend functionality. Expose services via well-documented REST/JSON endpoints and typed service interfaces in Models/ and Services/. Frontend components interact with abstractions, not concrete implementations. APIs should include versioning and consistent error shapes.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Test-First (NON-NEGOTIABLE)
+Adopt TDD: write tests before implementation and follow Red-Green-Refactor. Unit tests cover Models and business logic; component tests cover UI behavior; integration tests validate end-to-end flows. Tests are required for PR approval and protect public behaviors.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Integration Testing
+Integration tests validate the data flow from API through Models to UI rendering. Use appsettings.Development.json or test-specific config for fixtures. Run integration suites in CI; all integration tests must pass before merging to main.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Configuration Management
+Manage environment-specific settings through appsettings.json and environment-specific overrides (appsettings.Development.json, appsettings.Production.json). Do not hardcode secrets or environment-specific values in source; use User Secrets or a secure secrets store. Centralize DI and configuration in Program.cs.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Documentation Standards
+Document intent and usage: XML comments for public methods and components, README.md with architecture and setup steps, and concise CHANGELOG entries for behavioral changes. Include usage examples and diagrams for complex flows. Update docs as part of feature work.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### VII. Dependency Injection & Abstraction
+Register services centrally in Program.cs. Favor interface-driven design; code depends on abstractions. Document service lifetimes (Transient/Scoped/Singleton) and choose lifetimes to match resource usage. Provide test doubles (mocks/fakes) for common services.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### VIII. Data Validation & Security
+Validate input at the Model level using data annotations and custom validators; do not rely solely on client-side checks. Enforce authentication and authorization for protected endpoints. Never log sensitive data; redact secrets in errors and telemetry. Follow least-privilege access patterns.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### IX. Code Quality & Reviews
+Use consistent coding conventions, formatters, and static analyzers. Every PR requires at least one reviewer and green CI checks. Prioritize readability and simplicity; refactor when complexity grows. Maintain meaningful unit and integration test coverage.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+### X. Release & Deployment
+Automate builds, tests, and deployments with CI/CD. Manage DB migrations, feature flags, and backward-compatible schema changes carefully. Maintain a rollback strategy, health checks, and monitoring/alerts for production releases.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+## Amendments
+Changes to this constitution require a documented rationale and a pull request. Amendments are applied after review and consensus.
