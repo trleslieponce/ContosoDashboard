@@ -1,0 +1,15 @@
+{
+  "name": "speckit",
+  "version": "0.1.0",
+  "description": "Minimal speckit CLI stub",
+  "bin": {
+    "speckit": "bin/speckit.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "main": "bin/speckit.js",
+  "scripts": {
+    "start": "node bin/speckit.js"
+  },
+  "dependencies": {}
+}
