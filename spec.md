@@ -58,15 +58,44 @@ This specification defines the Document Upload and Management feature for Contos
 - **Admin Reports**: Access to audit logs with filtering by user, document, date range, action type
 - **Retention**: Audit logs retained for 2 years minimum
 
-## 4. Performance Requirements
+## 4. Edge Cases & Best Practices
 
-| Operation | Target Time |
-|-----------|------------|
-| Upload 25 MB file | ≤ 30 seconds |
-| List documents (500 docs) | ≤ 2 seconds |
-| Search documents | ≤ 2 seconds |
-| Preview document (PDF/image) | ≤ 3 seconds |
-| Download document | ≤ 5 seconds |
+### Edge Case 1: Special Characters in Filenames
+
+**Scenario:** Users upload files with special characters, Unicode characters, or path traversal attempts in filenames (e.g., `../../malicious.pdf`, `file<script>.docx`, `文件名.pdf`).
+
+**Recommended Solution:**
+- Sanitize filenames by removing or replacing special characters that could cause security or compatibility issues
+- Use a whitelist approach: allow only alphanumeric characters, hyphens, underscores, and periods
+- Preserve file extensions for document type validation
+- Store the original filename in metadata separately from the sanitized system filename
+- Implement server-side validation before file storage
+- Example: `user_document_2024-01-15.pdf` instead of `User's Document (2024) [Final].pdf`
+
+### Edge Case 2: User Removal from Projects
+
+**Scenario:** A user is removed from a project while documents are being uploaded or after they've uploaded files.
+
+**Recommended Solution:**
+- Decouple user permissions from document ownership; documents remain accessible based on project membership, not uploader identity
+- When a user is removed from a project, their uploaded documents remain accessible to remaining project members
+- Maintain an audit trail showing which user uploaded each document and when
+- Prevent removed users from accessing or modifying project documents through role-based access control (RBAC)
+- Consider implementing a soft-delete for user records to preserve document attribution history
+- Notify remaining project members of the user removal and clarify document access policies
+
+### Edge Case 3: Project Deletion Handling
+
+**Scenario:** A project is deleted while containing uploaded documents or while an upload is in progress.
+
+**Recommended Solution:**
+- Implement cascading delete logic with proper cleanup: remove all associated documents from storage and database
+- Before deletion, enforce a confirmation step with a warning about document loss
+- Maintain an archive/backup of deleted project documents for a configurable retention period (e.g., 30 days)
+- Log all project deletions with timestamps and responsible user for audit compliance
+- Cancel any in-progress uploads and clean up partial files from storage
+- Consider implementing a soft-delete option for projects to allow recovery before permanent purge
+- Provide administrators with the ability to export documents before project deletion
 
 ## 5. Security Requirements
 
